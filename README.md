@@ -35,7 +35,7 @@ Ohne Firebase-Eintrag läuft das Tool im **lokalen Testmodus**. Die Daten bleibe
 1. Unten auf **Verwaltung (iPad-Team)** klicken und anmelden.
 2. **Tabelle übernehmen**: Die Tabelle mit Datum und je einer Spalte pro Kürzel aus Word, Excel oder Numbers kopieren, einfügen, **Prüfen**, dann **Übernehmen**.
    - Bereits vorhandene Fenster werden übersprungen.
-   - Vergangene Tage und Tage nach dem 13.11. (Frist) werden nicht übernommen.
+   - Vergangene Tage und Tage nach dem 06.11. (Frist) werden nicht übernommen.
    - Mit * markierte Tage werden übersprungen, solange der Haken gesetzt ist.
 3. Einzelne Fenster kannst du mit dem Formular hinzufügen oder in der Liste löschen. Beim Löschen werden die Buchungen in diesem Fenster mitgelöscht, und das Tool nennt dir die betroffenen Kürzel.
 4. **Buchungen**: Liste mit Kürzel, Uhrzeit und Betreuung. Du kannst sie als CSV herunterladen, drucken oder einzelne Buchungen stornieren.
