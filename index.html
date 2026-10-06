@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iPad-Austausch Termine</title>
+<meta name="description" content="Terminbuchung für den Austausch der Lehrer-iPads am Paul-Ehrlich-Berufskolleg">
+<style>
+:root{
+  --brand:#2A473B; --brand-mid:#4DAF8E; --brand-soft:#CCE4D8; --brand-grey:#6C887C;
+  --brand-on:#FFFFFF;
+  --ground:#F0F4F1; --surface:#FFFFFF; --surface-2:#F6FAF7; --sunken:#E5EDE8;
+  --ink:#16241D; --ink-2:#3B4F45; --muted:#5E7268; --line:#D9E4DD; --line-2:#BDCEC4;
+  --danger:#A32F22; --danger-soft:#F9E9E6;
+  --info:#2F6E86; --info-soft:#E1EDF2;
+  --warn:#8A6A12; --warn-soft:#F3EEDC;
+  --shadow:0 1px 2px rgba(20,36,29,.08), 0 1px 1px rgba(20,36,29,.05);
+  --lift:0 14px 30px rgba(20,36,29,.22), 0 2px 6px rgba(20,36,29,.12);
+  --sans:"Carlito", Calibri, "Segoe UI", system-ui, -apple-system, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --brand:#7FCBAE; --brand-mid:#4DAF8E; --brand-soft:#17281F; --brand-grey:#9BB3A6;
+    --brand-on:#0D1611;
+    --ground:#0F1512; --surface:#18201B; --surface-2:#1E2823; --sunken:#131A16;
+    --ink:#E6EEE9; --ink-2:#BFCEC6; --muted:#8B9E94; --line:#25322B; --line-2:#37483F;
+    --danger:#F08C7F; --danger-soft:#32201D;
+    --info:#74AEC4; --info-soft:#15252B;
+    --warn:#D2AE5B; --warn-soft:#292315;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --brand:#7FCBAE; --brand-mid:#4DAF8E; --brand-soft:#17281F; --brand-grey:#9BB3A6;
+  --brand-on:#0D1611;
+  --ground:#0F1512; --surface:#18201B; --surface-2:#1E2823; --sunken:#131A16;
+  --ink:#E6EEE9; --ink-2:#BFCEC6; --muted:#8B9E94; --line:#25322B; --line-2:#37483F;
+  --danger:#F08C7F; --danger-soft:#32201D;
+  --info:#74AEC4; --info-soft:#15252B;
+  --warn:#D2AE5B; --warn-soft:#292315;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select{font:inherit; color:inherit}
+a{color:var(--brand)}
+:focus-visible{outline:3px solid var(--brand-mid); outline-offset:2px}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} }
+
+/* ---------- Kopfzeile im PEBK-Grün ---------- */
+.topbar{background:#2A473B; color:#FFFFFF}
+.topbar-in{
+  max-width:920px; margin:0 auto; padding:16px 16px 18px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px 20px;
+}
+.brandmark{
+  width:44px; height:44px; border-radius:10px; flex:0 0 auto;
+  display:grid; place-items:center; background:#4DAF8E; color:#0D1611;
+  font-weight:700; font-size:14px; letter-spacing:.04em;
+}
+h1{margin:0; font-size:clamp(19px,3.4vw,24px); font-weight:700; text-wrap:balance}
+.subtitle{margin:1px 0 0; color:#CCE4D8; font-size:14px}
+.topbar-right{margin-left:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.status{
+  display:inline-flex; align-items:center; gap:7px; font-size:12.5px;
+  color:#EAF4EE; border:1px solid rgba(204,228,216,.42); border-radius:999px;
+  padding:4px 11px 4px 9px; background:rgba(255,255,255,.08); white-space:nowrap;
+}
+.status .dot{width:8px; height:8px; border-radius:50%; background:#8FA79A}
+.status.ok .dot{background:#7FE0B4}
+.status.local .dot{background:#E8C266}
+.status.warn .dot{background:#F0968A}
+.topbtn{
+  min-height:36px; padding:0 13px; border-radius:8px; cursor:pointer;
+  background:rgba(255,255,255,.10); color:#FFFFFF;
+  border:1px solid rgba(204,228,216,.45); font-size:14px;
+}
+.topbtn:hover{background:rgba(255,255,255,.2)}
+.topbtn:focus-visible{outline:2px solid #CCE4D8}
+
+/* ---------- Layout ---------- */
+main{max-width:920px; margin:0 auto; padding:18px 16px 40px}
+.card{
+  background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  box-shadow:var(--shadow); padding:18px; margin-bottom:16px;
+}
+.card h2{margin:0 0 4px; font-size:19px; display:flex; align-items:center; gap:10px}
+.card > p.lead{margin:0 0 14px; color:var(--ink-2)}
+.stepno{
+  width:28px; height:28px; border-radius:50%; flex:0 0 auto;
+  display:inline-grid; place-items:center; font-size:14px; font-weight:700;
+  background:var(--brand); color:var(--brand-on);
+}
+.card.disabled{opacity:.55}
+.card.disabled .stepno{background:var(--brand-grey)}
+
+.notice{
+  display:flex; gap:12px; align-items:flex-start;
+  border-radius:12px; padding:12px 14px; margin-bottom:16px;
+  background:var(--warn-soft); border:1px solid color-mix(in srgb, var(--warn) 35%, transparent);
+}
+.notice strong{color:var(--warn)}
+.notice.info{background:var(--info-soft); border-color:color-mix(in srgb, var(--info) 35%, transparent)}
+.notice.info strong{color:var(--info)}
+.notice p{margin:0}
+
+.facts{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin:0; padding:0; list-style:none}
+.facts li{background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:10px 12px}
+.facts b{display:block; font-size:12.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:700}
+
+details.howto{margin-top:12px; border-top:1px solid var(--line); padding-top:10px}
+details.howto summary{cursor:pointer; font-weight:700; color:var(--brand); padding:4px 0}
+details.howto ol{margin:8px 0 0; padding-left:22px}
+details.howto li{margin-bottom:6px}
+
+/* ---------- Formularelemente ---------- */
+label.lbl{display:block; font-weight:700; margin-bottom:6px}
+.inp{
+  width:100%; min-height:46px; padding:10px 12px; border-radius:10px;
+  border:1.5px solid var(--line-2); background:var(--surface-2);
+}
+.inp:focus{border-color:var(--brand-mid); outline:none; box-shadow:0 0 0 3px color-mix(in srgb, var(--brand-mid) 30%, transparent)}
+#kuerzel{max-width:200px; text-transform:uppercase; font-size:20px; letter-spacing:.12em; font-weight:700}
+.help{font-size:14px; color:var(--muted); margin:6px 0 0}
+.err{color:var(--danger); font-size:14px; margin:6px 0 0; min-height:1em}
+
+.choices{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px}
+.choice{
+  text-align:left; cursor:pointer; border-radius:12px; padding:14px 16px;
+  background:var(--surface-2); border:2px solid var(--line);
+  display:flex; gap:14px; align-items:flex-start; min-height:96px;
+}
+.choice:hover{border-color:var(--brand-mid)}
+.choice[aria-pressed="true"]{border-color:var(--brand); background:color-mix(in srgb, var(--brand-mid) 14%, var(--surface))}
+.choice .min{
+  flex:0 0 auto; width:58px; height:58px; border-radius:12px;
+  display:grid; place-items:center; text-align:center; line-height:1;
+  background:var(--brand); color:var(--brand-on); font-weight:700; font-size:22px;
+}
+.choice .min small{display:block; font-size:12px; font-weight:400; margin-top:2px}
+.choice b{display:block; font-size:17px; margin-bottom:2px}
+.choice span.desc{color:var(--ink-2); font-size:14.5px}
+
+.day{margin-bottom:16px}
+.day h3{margin:0 0 8px; font-size:16px; color:var(--ink-2)}
+.slots{display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:8px}
+.slot{
+  min-height:44px; border-radius:9px; cursor:pointer; font-weight:700;
+  border:1.5px solid var(--brand-mid); background:var(--surface); color:var(--brand);
+}
+.slot:hover{background:color-mix(in srgb, var(--brand-mid) 18%, var(--surface))}
+.slot:disabled{cursor:not-allowed; opacity:.45}
+.empty{color:var(--muted); font-style:italic; margin:4px 0}
+.legend{display:flex; gap:16px; flex-wrap:wrap; font-size:13.5px; color:var(--muted); margin:0 0 12px}
+
+.btn{
+  min-height:44px; padding:0 18px; border-radius:10px; cursor:pointer; font-weight:700;
+  border:1.5px solid var(--brand); background:var(--brand); color:var(--brand-on);
+}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent; color:var(--brand)}
+.btn.danger{background:transparent; color:var(--danger); border-color:var(--danger)}
+.btn.small{min-height:36px; padding:0 12px; font-size:14px}
+.btn:disabled{opacity:.5; cursor:not-allowed}
+.row{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+
+/* ---------- Bestätigung / eigener Termin ---------- */
+.booked{
+  border:2px solid var(--brand-mid);
+  background:color-mix(in srgb, var(--brand-mid) 10%, var(--surface));
+}
+.bigdate{font-size:clamp(20px,4vw,26px); font-weight:700; margin:4px 0 2px}
+.booked ul{margin:10px 0 14px; padding-left:20px}
+
+/* ---------- Dialog ---------- */
+dialog{
+  border:none; border-radius:14px; padding:0; width:min(460px, calc(100vw - 32px));
+  background:var(--surface); color:var(--ink); box-shadow:var(--lift);
+}
+dialog::backdrop{background:rgba(10,20,15,.5)}
+.dlg{padding:20px}
+.dlg h2{margin:0 0 8px; font-size:20px}
+.dlg .row{justify-content:flex-end; margin-top:16px}
+
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed; left:50%; bottom:20px; transform:translateX(-50%) translateY(20px);
+  background:var(--ink); color:var(--ground); padding:10px 16px; border-radius:10px;
+  box-shadow:var(--lift); opacity:0; pointer-events:none; transition:.2s; max-width:calc(100vw - 32px);
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+/* ---------- Verwaltung ---------- */
+.admin-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; align-items:end}
+.tbl-wrap{overflow-x:auto; margin-top:8px}
+table{width:100%; border-collapse:collapse; font-size:15px}
+th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap}
+th{font-size:13px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted)}
+.pill{display:inline-block; padding:1px 8px; border-radius:999px; font-size:13px; font-weight:700; background:var(--brand-soft); color:var(--brand)}
+.pill.p20{background:var(--info-soft); color:var(--info)}
+.stats{display:flex; gap:10px; flex-wrap:wrap; margin:6px 0 12px}
+.stat{background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:8px 12px; min-width:120px}
+.stat b{display:block; font-size:22px}
+.stat span{font-size:13px; color:var(--muted)}
+
+.ov-day{margin-bottom:14px}
+.ov-day h3{margin:0 0 6px; font-size:15.5px; color:var(--ink-2)}
+.ov-row{display:flex; flex-wrap:wrap; gap:4px 12px; align-items:center; padding:7px 10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); margin-bottom:5px}
+.ov-row .t{font-weight:700; min-width:105px; font-variant-numeric:tabular-nums}
+.ov-row .k{font-weight:700; letter-spacing:.06em; color:var(--brand)}
+.ov-row .m{color:var(--muted); font-size:14px}
+footer{max-width:920px; margin:0 auto; padding:0 16px 30px; color:var(--muted); font-size:13.5px}
+footer button{background:none; border:none; color:var(--muted); text-decoration:underline; cursor:pointer; padding:0}
+.hidden{display:none !important}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+@media print{
+  .topbar, footer, #booking-area, .no-print{display:none !important}
+  body{background:#fff; color:#000}
+  .card{box-shadow:none; border:none; padding:0}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brandmark" aria-hidden="true">PEBK</div>
+    <div>
+      <h1>iPad-Austausch &ndash; Terminbuchung</h1>
+      <p class="subtitle">Paul-Ehrlich-Berufskolleg &middot; iPad-Team &middot; Raum A113</p>
+    </div>
+    <div class="topbar-right">
+      <span class="status" id="status" role="status"><span class="dot"></span><span id="status-text">verbinde&hellip;</span></span>
+      <button type="button" class="topbtn hidden" id="btn-back">Zur Buchung</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ======================= Buchungsbereich ======================= -->
+  <div id="booking-area">
+
+    <div class="notice">
+      <span aria-hidden="true">&#9888;&#65039;</span>
+      <p><strong>Verpflichtend:</strong> Der Austausch deines Lehrer-iPads muss bis spätestens
+      <strong id="frist-text">22.12.2026</strong> (Beginn der Weihnachtsferien) erledigt sein.</p>
+    </div>
+
+    <section class="card">
+      <h2>So läuft der Austausch</h2>
+      <ul class="facts">
+        <li><b>Ort</b><span id="raum-text">Raum A113</span></li>
+        <li><b>Mitbringen</b>Dein altes iPad</li>
+        <li><b>5 Minuten</b>Nur Vertragsunterzeichnung und Übergabe</li>
+        <li><b>20 Minuten</b>Übergabe + Hilfe bei Datensicherung oder -übertragung</li>
+      </ul>
+      <details class="howto">
+        <summary>Datensicherung – wenn möglich vorher erledigen</summary>
+        <ol>
+          <li><strong>Nextcloud:</strong> Lade deine Dateien in die Nextcloud hoch und hol sie dir anschließend auf dem neuen iPad wieder ab.</li>
+          <li><strong>AirDrop:</strong> Behalte dein altes iPad vorübergehend, übertrage die Daten per AirDrop auf das neue Gerät und gib das alte iPad danach ab.</li>
+        </ol>
+        <p class="help">Eine Schritt-für-Schritt-Anleitung findest du im Anhang der Mail. Bei Fragen meld dich bei Jonas Rubbert (RUB).</p>
+      </details>
+    </section>
+
+    <!-- Bereits gebuchter Termin -->
+    <section class="card booked hidden" id="my-booking" aria-live="polite"></section>
+
+    <div id="steps">
+      <section class="card" id="step1">
+        <h2><span class="stepno">1</span>Dein Kürzel</h2>
+        <p class="lead">Mit deinem Kürzel tragen wir dich ein. Weitere Daten brauchen wir nicht.</p>
+        <label class="lbl" for="kuerzel">Lehrerkürzel</label>
+        <input class="inp" id="kuerzel" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="z. B. RUB" aria-describedby="kuerzel-err">
+        <p class="err" id="kuerzel-err" aria-live="polite"></p>
+      </section>
+
+      <section class="card disabled" id="step2" aria-disabled="true">
+        <h2><span class="stepno">2</span>Welchen Termin brauchst du?</h2>
+        <p class="lead">Wähl die Terminlänge, die zu dir passt.</p>
+        <div class="choices" role="group" aria-label="Terminart">
+          <button type="button" class="choice" data-dauer="5" aria-pressed="false">
+            <span class="min">5<small>Min.</small></span>
+            <span><b>iPad-Übergabe</b><span class="desc">Du hast deine Daten schon gesichert. Es geht nur um Vertragsunterzeichnung und Gerätetausch.</span></span>
+          </button>
+          <button type="button" class="choice" data-dauer="20" aria-pressed="false">
+            <span class="min">20<small>Min.</small></span>
+            <span><b>Übergabe + Datensicherung</b><span class="desc">Du brauchst Hilfe bei der Datensicherung oder der Übertragung auf das neue iPad.</span></span>
+          </button>
+        </div>
+      </section>
+
+      <section class="card disabled" id="step3" aria-disabled="true">
+        <h2><span class="stepno">3</span>Termin auswählen</h2>
+        <p class="lead" id="step3-lead">Wähl zuerst oben eine Terminart.</p>
+        <p class="legend">Angezeigt werden nur freie Startzeiten. Gib oben dein Kürzel ein und tipp dann eine Zeit an.</p>
+        <div id="slot-list"></div>
+      </section>
+    </div>
+
+    <section class="card" id="overview">
+      <h2>Wer hat wann gebucht?</h2>
+      <p class="lead" id="ov-lead">Alle kommenden Termine im Überblick.</p>
+      <label class="lbl" for="ov-filter">Kürzel suchen</label>
+      <input class="inp" id="ov-filter" maxlength="5" autocomplete="off" spellcheck="false" placeholder="z. B. RUB" style="max-width:200px;text-transform:uppercase">
+      <div id="ov-list" style="margin-top:14px"></div>
+    </section>
+  </div>
+
+  <!-- ======================= Verwaltung ======================= -->
+  <div id="admin-area" class="hidden">
+    <section class="card">
+      <h2>Verwaltung</h2>
+      <p class="lead" id="admin-who"></p>
+      <div class="row no-print">
+        <button type="button" class="btn small ghost" id="btn-logout">Abmelden</button>
+      </div>
+    </section>
+
+    <section class="card no-print">
+      <h2>Zeitfenster aus Tabelle übernehmen</h2>
+      <p class="lead">Kopier die Tabelle (Datum + eine Spalte je Teammitglied) aus Word, Excel oder Numbers und füg sie hier ein.
+      In jedem Zeitfenster können 5- und 20-Minuten-Termine gemischt gebucht werden.</p>
+      <label class="lbl" for="imp-text">Tabelle</label>
+      <textarea class="inp" id="imp-text" rows="8" spellcheck="false" style="font-family:ui-monospace,Menlo,monospace;font-size:13px"></textarea>
+      <label class="row" style="margin-top:8px;gap:8px"><input type="checkbox" id="imp-skipstar" checked> Mit * markierte Tage überspringen</label>
+      <div class="row" style="margin-top:10px">
+        <button type="button" class="btn small ghost" id="imp-check">Prüfen</button>
+        <button type="button" class="btn small" id="imp-go" disabled>Übernehmen</button>
+      </div>
+      <p class="help" id="imp-result" aria-live="polite"></p>
+
+      <h3>Einzelnes Zeitfenster anlegen</h3>
+      <form id="f-window" class="admin-grid">
+        <div><label class="lbl" for="w-datum">Datum</label><input class="inp" type="date" id="w-datum" required></div>
+        <div><label class="lbl" for="w-von">von</label><input class="inp" type="time" id="w-von" step="300" required></div>
+        <div><label class="lbl" for="w-bis">bis</label><input class="inp" type="time" id="w-bis" step="300" required></div>
+        <div><label class="lbl" for="w-team">Betreuung</label><input class="inp" id="w-team" list="team-list" maxlength="5" placeholder="RUB" required style="text-transform:uppercase"></div>
+        <div><button class="btn" type="submit">Hinzufügen</button></div>
+      </form>
+      <datalist id="team-list"></datalist>
+      <p class="err" id="w-err" aria-live="polite"></p>
+      <h3>Vorhandene Zeitfenster</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>Datum</th><th>Zeit</th><th>Betreuung</th><th>gebucht</th><th></th></tr></thead><tbody id="w-list"></tbody></table></div>
+    </section>
+
+    <section class="card">
+      <h2>Buchungen</h2>
+      <div class="stats" id="stats"></div>
+      <div class="row no-print">
+        <button type="button" class="btn small" id="btn-csv">Als CSV herunterladen</button>
+        <button type="button" class="btn small ghost" id="btn-print">Drucken</button>
+      </div>
+      <div class="tbl-wrap"><table><thead><tr><th>Datum</th><th>Uhrzeit</th><th>Art</th><th>Kürzel</th><th>bei</th><th>gebucht am</th><th class="no-print"></th></tr></thead><tbody id="b-list"></tbody></table></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <p>Gespeichert werden nur Kürzel, Terminart und Uhrzeit. Die Übersicht ist für alle im Kollegium sichtbar.
+  Fragen an Jonas Rubbert (RUB). &middot; <button type="button" id="btn-admin">Verwaltung (iPad-Team)</button></p>
+</footer>
+
+<!-- Buchung bestätigen -->
+<dialog id="dlg-confirm" aria-labelledby="dlg-confirm-title">
+  <form method="dialog" class="dlg">
+    <h2 id="dlg-confirm-title">Termin buchen?</h2>
+    <div id="dlg-confirm-body"></div>
+    <div class="row">
+      <button class="btn ghost" value="cancel">Abbrechen</button>
+      <button class="btn" value="ok" id="dlg-confirm-ok">Verbindlich buchen</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Anmeldung Verwaltung -->
+<dialog id="dlg-login" aria-labelledby="dlg-login-title">
+  <form class="dlg" id="f-login">
+    <h2 id="dlg-login-title">Anmeldung Verwaltung</h2>
+    <p class="help" id="login-hint">Nur für das iPad-Team.</p>
+    <div id="login-fields">
+      <label class="lbl" for="l-mail">E-Mail</label>
+      <input class="inp" type="email" id="l-mail" autocomplete="username">
+      <label class="lbl" for="l-pass" style="margin-top:10px">Passwort</label>
+      <input class="inp" type="password" id="l-pass" autocomplete="current-password">
+    </div>
+    <p class="err" id="l-err" aria-live="polite"></p>
+    <div class="row">
+      <button type="button" class="btn ghost" id="l-cancel">Abbrechen</button>
+      <button class="btn" type="submit">Anmelden</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ==========================================================================
+     EINSTELLUNGEN – hier nach dem Einrichten von Firebase eintragen
+     (Anleitung: README.md im selben Ordner).
+     Bleiben die Felder leer, läuft das Tool im lokalen Testmodus nur auf
+     diesem Gerät – ideal zum Ausprobieren, aber NICHT zum Veröffentlichen.
+     ========================================================================== */
+  var FIREBASE_DB_URL  = "https://ipad-austausch-pebk-default-rtdb.europe-west1.firebasedatabase.app";   // z. B. "https://ipad-austausch-default-rtdb.europe-west1.firebasedatabase.app"
+  var FIREBASE_API_KEY = "AIzaSyBj-WIGO11BDlSwsoFAtWBpeOpSSX6_weA";   // Projekteinstellungen → Allgemein → Web-API-Schlüssel
+  var FRIST = "2026-12-22";    // letzter möglicher Tag
+  var RAUM  = "A113";
+
+  /* Vorlage für den Import in der Verwaltung (Tab-getrennt, wie aus Word/Excel kopiert).
+     Sie wird nur vorgeschlagen – übernommen wird erst per Klick auf „Übernehmen“. */
+  var STARTTABELLE = [
+    "Datum\tKRS\tSCD\tRUB\tCRY",
+    "Di 06.10.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 07.10.2026\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 09.10.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 12.10.2026\t–\t–\t09:30–14:30\t12:00–12:45",
+    "Di 13.10.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 14.10.2026\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 16.10.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 19.10.2026*\t–\t–\t09:30–14:30\t12:00–12:45",
+    "Di 20.10.2026*\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 21.10.2026*\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 23.10.2026*\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 26.10.2026*\t–\t–\t09:30–14:30\t12:00–12:45",
+    "Di 27.10.2026*\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 28.10.2026*\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 30.10.2026*\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 02.11.2026\t–\t–\t09:30–14:30\t12:00–12:45",
+    "Di 03.11.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 04.11.2026\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 06.11.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 09.11.2026\t–\t–\t09:30–14:30\t12:00–12:45",
+    "Di 10.11.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 11.11.2026\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 13.11.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 16.11.2026\t–\t–\t09:30–14:30\t12:00–12:45",
+    "Di 17.11.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 18.11.2026\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 20.11.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 23.11.2026\t–\t–\t09:30–14:30\t12:00–12:45",
+    "Di 24.11.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 25.11.2026\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 27.11.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 30.11.2026\t–\t–\t09:30–14:30\t12:00–12:45",
+    "Di 01.12.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 02.12.2026\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 04.12.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 07.12.2026\t–\t–\t09:30–14:30\t12:00–12:45",
+    "Di 08.12.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 09.12.2026\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 11.12.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 14.12.2026\t–\t–\t09:30–14:30\t12:00–12:45",
+    "Di 15.12.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mi 16.12.2026\t–\t11:15–14:30\t08:30–09:10\t–",
+    "Fr 18.12.2026\t13:00–13:45\t–\t11:15–12:45\t–",
+    "Mo 21.12.2026\t–\t–\t09:30–14:30\t12:00–12:45"
+  ].join("\n");
+  /* ====================================================================== */
+
+  var FB_ROOT = "ipad";
+  var LOCAL_KEY = "ipad-termine-lokal";
+  var MINE_KEY  = "ipad-termine-mein-kuerzel";
+  var ADMIN_KEY = "ipad-termine-admin";
+  var POLL_MS = 30000;
+  var STEP = 5;                         // Raster in Minuten
+  var ONLINE = !!FIREBASE_DB_URL;
+
+  var ART = {
+    5:  {kurz:"5 Min.",  name:"iPad-Übergabe"},
+    20: {kurz:"20 Min.", name:"Übergabe + Datensicherung"}
+  };
+
+  /* ---------- Hilfsfunktionen ---------- */
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function toMin(hhmm){ var p = String(hhmm).split(":"); return (+p[0]) * 60 + (+p[1]); }
+  function fromMin(m){ return pad(Math.floor(m / 60)) + ":" + pad(m % 60); }
+  function todayIso(){ var d = new Date(); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function nowMin(){ var d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
+  var WT = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+  function dateLong(iso){
+    var p = iso.split("-"), d = new Date(+p[0], +p[1] - 1, +p[2]);
+    return WT[d.getDay()] + ", " + pad(+p[2]) + "." + pad(+p[1]) + "." + p[0];
+  }
+  function dateShort(iso){ var p = iso.split("-"); return pad(+p[2]) + "." + pad(+p[1]) + "."; }
+  function normKuerzel(s){ return String(s || "").trim().toUpperCase().replace(/\s+/g, ""); }
+  function validKuerzel(k){ return /^[A-ZÄÖÜ]{2,5}$/.test(k); }
+  function newId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function cellKey(fid, m){ return fid + "_" + fromMin(m).replace(":", ""); }
+  function byTime(a, b){ return (a.datum + a.zeit).localeCompare(b.datum + b.zeit); }
+
+  var toastTimer;
+  function toast(msg){
+    var t = $("toast"); t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 3400);
+  }
+  function setStatus(kind, text){
+    $("status").className = "status " + kind;
+    $("status-text").textContent = text;
+  }
+
+  /* ---------- Datenstand ----------
+     fenster[fid]       = {datum, von, bis, team}       – öffentlich lesbar
+     belegt[fid_HHMM]   = true                          – öffentlich lesbar, ohne Kürzel
+     buchungen[KÜRZEL]  = {kuerzel, dauer, datum, zeit, fid, team, gebucht}
+                          – als Liste nur für das angemeldete iPad-Team lesbar,
+                            einzeln abrufbar über das eigene Kürzel
+     Über „belegt“ verhindert die Datenbankregel Überschneidungen: Eine Buchung
+     schreibt alle Zellen, die sie abdeckt, in EINER Anfrage. Ist eine Zelle
+     schon vergeben, lehnt Firebase die gesamte Anfrage ab. Weil die Buchung
+     unter dem Kürzel liegt, ist auch „ein Termin pro Kürzel“ garantiert. */
+  var state = {fenster:{}, buchungen:{}, belegt:{}};
+  var mineCache = {};      // online: einzeln abgerufene eigene Buchungen
+
+  function cellsOf(fid, start, dauer){
+    var res = [];
+    for (var m = start; m < start + dauer; m += STEP) res.push(cellKey(fid, m));
+    return res;
+  }
+  function isFree(fid, start, dauer){
+    return cellsOf(fid, start, dauer).every(function(c){ return !state.belegt[c]; });
+  }
+
+  /* Startzeiten, die für eine Terminlänge angeboten werden: das Raster des
+     Fensters (von, von+d, von+2d …) plus jede Zeit direkt nach einer bestehenden
+     Buchung – so bleiben keine unbrauchbaren Lücken übrig. */
+  function startsFor(fid, f, dauer){
+    var a = toMin(f.von), b = toMin(f.bis), res = [];
+    var isToday = f.datum === todayIso(), now = nowMin();
+    for (var t = a; t + dauer <= b; t += STEP){
+      if (isToday && t <= now) continue;
+      var onGrid = (t - a) % dauer === 0;
+      var afterBooking = t > a && !!state.belegt[cellKey(fid, t - STEP)];
+      if ((onGrid || afterBooking) && isFree(fid, t, dauer)) res.push(t);
+    }
+    return res;
+  }
+  function freeMinutes(fid, f){
+    var n = 0;
+    for (var t = toMin(f.von); t < toMin(f.bis); t += STEP) if (!state.belegt[cellKey(fid, t)]) n += STEP;
+    return n;
+  }
+  function bookingOf(k){
+    var b = state.buchungen[k] || mineCache[k];
+    return b ? {key: k, b: b} : null;
+  }
+  /* Online darf die Seite nicht alle Buchungen lesen – nur die zum Kürzel. */
+  var lookupTimer;
+  function lookupMine(k){
+    if (!ONLINE || !k) return;
+    clearTimeout(lookupTimer);
+    lookupTimer = setTimeout(function(){
+      fbReq("GET", "buchungen/" + encodeURIComponent(k)).then(function(b){
+        if (b) mineCache[k] = b; else delete mineCache[k];
+        render();
+      }).catch(function(){});
+    }, 250);
+  }
+  function sortedWindowIds(){
+    return Object.keys(state.fenster).sort(function(a, b){
+      var x = state.fenster[a], y = state.fenster[b];
+      return (x.datum + x.von).localeCompare(y.datum + y.von);
+    });
+  }
+
+  /* ---------- Speicher: Firebase (REST + Livestrom) oder lokal ---------- */
+  var adminToken = null;   // ID-Token aus der Firebase-Anmeldung
+
+  function fbUrl(path, withAuth){
+    var u = FIREBASE_DB_URL.replace(/\/+$/, "") + "/" + FB_ROOT + (path ? "/" + path : "") + ".json";
+    return withAuth && adminToken ? u + "?auth=" + encodeURIComponent(adminToken) : u;
+  }
+  function fbReq(method, path, body, withAuth){
+    return fetch(fbUrl(path, withAuth), {
+      method: method, headers: {"Content-Type": "application/json"},
+      body: body === undefined ? undefined : JSON.stringify(body)
+    }).then(function(r){
+      if (!r.ok){ var e = new Error("HTTP " + r.status); e.status = r.status; throw e; }
+      return r.json();
+    });
+  }
+
+  function loadLocal(){
+    try {
+      var s = JSON.parse(localStorage.getItem(LOCAL_KEY) || "null");
+      if (s && typeof s === "object") applyPath("", s);
+    } catch(e){}
+  }
+  function saveLocal(){
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify(state)); } catch(e){}
+  }
+
+  function applyPath(path, data){
+    var parts = String(path || "").split("/").filter(Boolean);
+    if (!parts.length){
+      state.fenster   = (data && data.fenster)   || {};
+      state.buchungen = (data && data.buchungen) || {};
+      state.belegt    = (data && data.belegt)    || {};
+      return;
+    }
+    var coll = parts[0];
+    if (!state[coll]) return;
+    if (parts.length === 1){ state[coll] = data || {}; return; }
+    if (parts.length === 2){
+      if (data === null) delete state[coll][parts[1]]; else state[coll][parts[1]] = data;
+      return;
+    }
+    var item = state[coll][parts[1]] || (state[coll][parts[1]] = {});
+    if (data === null) delete item[parts[2]]; else item[parts[2]] = data;
+  }
+
+  /* Mehrere Pfade auf einmal ändern (null = löschen). Online ist das eine
+     einzige PATCH-Anfrage – Firebase führt sie ganz oder gar nicht aus. */
+  function write(updates, asAdmin){
+    if (!ONLINE){
+      var p = Object.keys(updates);
+      // lokal dieselbe Regel nachbilden: belegte Zellen nicht überschreiben
+      var clash = p.some(function(k){ return k.indexOf("belegt/") === 0 && updates[k] !== null && state.belegt[k.slice(7)]; });
+      if (clash){ var e = new Error("belegt"); e.status = 401; return Promise.reject(e); }
+      p.forEach(function(k){ applyPath(k, updates[k]); });
+      saveLocal(); render();
+      return Promise.resolve();
+    }
+    return fbReq("PATCH", "", updates, asAdmin).then(function(){
+      Object.keys(updates).forEach(function(k){ applyPath(k, updates[k]); });
+      render();
+    });
+  }
+
+  function connect(){
+    if (!ONLINE){
+      loadLocal();
+      // Testmodus: beim ersten Öffnen die Starttabelle laden, damit sofort Termine da sind
+      if (!Object.keys(state.fenster).length){
+        var today = todayIso();
+        parseTable(STARTTABELLE, true).windows.forEach(function(f){
+          if (f.datum >= today && f.datum <= FRIST) state.fenster[newId()] = f;
+        });
+        saveLocal();
+      }
+      render();
+      setStatus("local", "Lokaler Testmodus");
+      window.addEventListener("storage", function(e){ if (e.key === LOCAL_KEY){ loadLocal(); render(); } });
+      return;
+    }
+    // Je ein Livestrom für Zeitfenster, Belegung und Buchungen.
+    var pull = function(){
+      return Promise.all(["fenster", "belegt", "buchungen"].map(function(c){
+        return fbReq("GET", c).then(function(d){ applyPath(c, d); });
+      })).then(function(){ render(); setStatus("ok", "verbunden"); })
+        .catch(function(){ setStatus("warn", "keine Verbindung"); });
+    };
+    if (window.EventSource){
+      ["fenster", "belegt", "buchungen"].forEach(function(c){ stream(c, false); });
+    } else {
+      pull();
+    }
+    setInterval(pull, POLL_MS);   // Rückfallabgleich, falls der Livestrom aussetzt
+  }
+
+  /* Livestrom für einen Zweig; Firebase schickt put (ersetzen) oder patch (zusammenführen). */
+  function stream(coll, withAuth){
+    var es = new EventSource(fbUrl(coll, withAuth));
+    var handle = function(kind){ return function(ev){
+      try {
+        var msg = JSON.parse(ev.data), base = coll + (msg.path === "/" ? "" : msg.path);
+        if (kind === "put") applyPath(base, msg.data);
+        else if (msg.data) Object.keys(msg.data).forEach(function(k){ applyPath(base + "/" + k, msg.data[k]); });
+        render(); setStatus("ok", "live verbunden");
+      } catch(e){}
+    }; };
+    es.addEventListener("put", handle("put"));
+    es.addEventListener("patch", handle("patch"));
+    es.onerror = function(){ setStatus("warn", "Verbindung unterbrochen"); };
+    return es;
+  }
+
+  /* ---------- Buchungsablauf ---------- */
+  var sel = {kuerzel: "", dauer: 0};
+
+  function setStepEnabled(id, on){
+    var el = $(id);
+    el.classList.toggle("disabled", !on);
+    el.setAttribute("aria-disabled", on ? "false" : "true");
+    el.querySelectorAll(".choice").forEach(function(b){ b.disabled = !on; });
+  }
+
+  $("kuerzel").addEventListener("input", function(){
+    var k = normKuerzel(this.value);
+    sel.kuerzel = validKuerzel(k) ? k : "";
+    $("kuerzel-err").textContent = (k.length >= 2 && !sel.kuerzel) ? "Bitte nur Buchstaben (2–5 Zeichen) eingeben." : "";
+    lookupMine(sel.kuerzel);
+    render();
+  });
+
+  document.querySelectorAll(".choice").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      sel.dauer = +btn.dataset.dauer;
+      document.querySelectorAll(".choice").forEach(function(b){ b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+      render();
+      $("step3").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
+    });
+  });
+
+  function renderSlots(){
+    var list = $("slot-list");
+    if (!sel.dauer){ list.innerHTML = ""; $("step3-lead").textContent = "Wähl zuerst oben eine Terminart."; return; }
+    $("step3-lead").textContent = "Freie " + sel.dauer + "-Minuten-Termine in Raum " + RAUM + ":";
+    var today = todayIso(), active = !!sel.kuerzel && !bookingOf(sel.kuerzel);
+    var html = "", day = null, count = 0;
+    sortedWindowIds().forEach(function(fid){
+      var f = state.fenster[fid];
+      if (f.datum < today || f.datum > FRIST) return;
+      var starts = startsFor(fid, f, sel.dauer);
+      if (!starts.length) return;
+      if (f.datum !== day){
+        if (day) html += "</div>";
+        day = f.datum;
+        html += '<div class="day"><h3>' + esc(dateLong(f.datum)) + '</h3>';
+      }
+      html += '<p class="help" style="margin:0 0 6px">' + esc(f.von) + '–' + esc(f.bis) + ' Uhr · mit ' + esc(f.team) + '</p><div class="slots" style="margin-bottom:10px">';
+      starts.forEach(function(t){
+        count++;
+        html += '<button type="button" class="slot" data-fid="' + esc(fid) + '" data-t="' + t + '"' + (active ? "" : " disabled") +
+          ' aria-label="' + esc(dateLong(f.datum)) + ', ' + fromMin(t) + ' bis ' + fromMin(t + sel.dauer) + ' Uhr bei ' + esc(f.team) + ' buchen">' + fromMin(t) + '</button>';
+      });
+      html += "</div>";
+    });
+    if (day) html += "</div>";
+    if (!Object.keys(state.fenster).length){
+      list.innerHTML = '<p class="empty">Es sind noch keine Termine freigeschaltet. Das iPad-Team trägt sie in Kürze ein.</p>';
+      return;
+    }
+    if (!count){
+      list.innerHTML = '<p class="empty">Für diese Terminart ist gerade kein Termin frei. Schau später noch einmal vorbei oder meld dich bei Jonas Rubbert (RUB).</p>';
+      return;
+    }
+    list.innerHTML = html;
+    list.querySelectorAll(".slot").forEach(function(b){
+      b.addEventListener("click", function(){ askBook(b.dataset.fid, +b.dataset.t); });
+    });
+  }
+
+  function askBook(fid, t){
+    var f = state.fenster[fid];
+    if (!f || !sel.kuerzel) return;
+    var d = sel.dauer;
+    $("dlg-confirm-body").innerHTML =
+      '<p class="bigdate">' + esc(dateLong(f.datum)) + '<br>' + fromMin(t) + '–' + fromMin(t + d) + ' Uhr</p>' +
+      '<p>' + esc(ART[d].name) + ' (' + esc(ART[d].kurz) + ') · Raum ' + esc(RAUM) + ' · bei ' + esc(f.team) +
+      '<br>Dein Kürzel: <strong>' + esc(sel.kuerzel) + '</strong></p>';
+    var dlg = $("dlg-confirm");
+    dlg.returnValue = "";
+    dlg.onclose = function(){ if (dlg.returnValue === "ok") book(fid, t, d); };
+    dlg.showModal();
+  }
+
+  function book(fid, t, d){
+    var k = sel.kuerzel, f = state.fenster[fid];
+    if (bookingOf(k)){ toast("Für " + k + " ist schon ein Termin gebucht."); return; }
+    if (!f || !isFree(fid, t, d)){ toast("Dieser Termin ist leider gerade vergeben worden."); render(); return; }
+    var upd = {};
+    upd["buchungen/" + k] = {kuerzel: k, dauer: d, datum: f.datum, zeit: fromMin(t), fid: fid, team: f.team, gebucht: new Date().toISOString()};
+    cellsOf(fid, t, d).forEach(function(c){ upd["belegt/" + c] = true; });
+    write(upd).then(function(){
+      try { localStorage.setItem(MINE_KEY, k); } catch(e){}
+      if (ONLINE) mineCache[k] = upd["buchungen/" + k];
+      toast("Termin gebucht – bis dann in " + RAUM + "!");
+      window.scrollTo({top: 0, behavior: "smooth"});
+    }).catch(function(e){
+      if (e.status !== 401 && e.status !== 403){ toast("Buchung nicht gespeichert – bitte Internetverbindung prüfen."); return; }
+      // abgelehnt: entweder Termin weg oder für das Kürzel existiert schon eine Buchung
+      if (!ONLINE){ toast("Dieser Termin wurde gerade von jemand anderem gebucht. Bitte wähl einen anderen."); return; }
+      fbReq("GET", "buchungen/" + encodeURIComponent(k)).then(function(b){
+        if (b){ mineCache[k] = b; render(); toast("Für " + k + " ist schon ein Termin gebucht."); }
+        else toast("Dieser Termin wurde gerade von jemand anderem gebucht. Bitte wähl einen anderen.");
+      }).catch(function(){ toast("Buchung nicht gespeichert – bitte erneut versuchen."); });
+    });
+  }
+
+  function cancelUpdates(k){
+    var b = state.buchungen[k] || mineCache[k], upd = {};
+    upd["buchungen/" + k] = null;
+    if (b && b.fid) cellsOf(b.fid, toMin(b.zeit), +b.dauer).forEach(function(c){
+      if (state.belegt[c]) upd["belegt/" + c] = null;
+    });
+    return upd;
+  }
+
+  function renderMine(){
+    var box = $("my-booking");
+    var k = sel.kuerzel;
+    if (!k){ try { k = localStorage.getItem(MINE_KEY) || ""; } catch(e){ k = ""; } }
+    var mine = k ? bookingOf(k) : null;
+    if (!mine){ box.classList.add("hidden"); $("steps").classList.remove("hidden"); return; }
+    var b = mine.b, ende = fromMin(toMin(b.zeit) + (+b.dauer));
+    box.innerHTML =
+      '<h2>&#10003; Dein Termin steht</h2>' +
+      '<p class="bigdate">' + esc(dateLong(b.datum)) + ', ' + esc(b.zeit) + '–' + esc(ende) + ' Uhr</p>' +
+      '<p>' + esc(ART[b.dauer] ? ART[b.dauer].name : "") + ' · Raum ' + esc(RAUM) + ' · bei ' + esc(b.team || "") +
+      ' · Kürzel <strong>' + esc(b.kuerzel) + '</strong></p>' +
+      '<ul><li>Bring dein <strong>altes iPad</strong> mit.</li>' +
+      (+b.dauer === 5 ? '<li>Sichere deine Daten bitte vorher (Nextcloud oder AirDrop).</li>' : '<li>Wir helfen dir vor Ort bei der Datensicherung.</li>') +
+      '</ul><div class="row">' +
+      '<button type="button" class="btn small" id="btn-ics">In Kalender eintragen</button>' +
+      '<button type="button" class="btn small danger" id="btn-storno">Termin absagen</button>' +
+      '<button type="button" class="btn small ghost" id="btn-other">Anderes Kürzel</button></div>';
+    box.classList.remove("hidden");
+    $("steps").classList.add("hidden");
+    $("btn-ics").onclick = function(){ downloadIcs(b); };
+    $("btn-storno").onclick = function(){
+      if (!confirm("Termin am " + dateShort(b.datum) + " um " + b.zeit + " Uhr wirklich absagen?")) return;
+      write(cancelUpdates(mine.key)).then(function(){ delete mineCache[mine.key]; render(); toast("Termin abgesagt. Bitte buch dir einen neuen."); })
+        .catch(function(){ toast("Absage nicht gespeichert – bitte erneut versuchen."); });
+    };
+    $("btn-other").onclick = function(){
+      try { localStorage.removeItem(MINE_KEY); } catch(e){}
+      sel.kuerzel = ""; $("kuerzel").value = ""; render(); $("kuerzel").focus();
+    };
+  }
+
+  function downloadIcs(b){
+    var d = b.datum.replace(/-/g, ""), s = b.zeit.replace(":", "") + "00";
+    var e = fromMin(toMin(b.zeit) + (+b.dauer)).replace(":", "") + "00";
+    var ics = [
+      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//PEBK//iPad-Austausch//DE", "BEGIN:VEVENT",
+      "UID:ipad-" + d + s + "-" + b.kuerzel + "@pebk",
+      "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+/, ""),
+      "DTSTART:" + d + "T" + s, "DTEND:" + d + "T" + e,
+      "SUMMARY:iPad-Austausch (" + (ART[b.dauer] ? ART[b.dauer].kurz : "") + ")",
+      "LOCATION:Raum " + RAUM,
+      "DESCRIPTION:Altes iPad mitbringen.",
+      "END:VEVENT", "END:VCALENDAR"
+    ].join("\r\n");
+    saveFile("ipad-austausch.ics", ics, "text/calendar");
+  }
+  function saveFile(name, text, type){
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], {type: type + ";charset=utf-8"}));
+    a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+
+  /* ---------- Verwaltung ---------- */
+  var isAdmin = false;
+
+  function showAdmin(on){
+    isAdmin = on;
+    $("booking-area").classList.toggle("hidden", on);
+    $("admin-area").classList.toggle("hidden", !on);
+    $("btn-back").classList.toggle("hidden", !on);
+    if (on && !$("imp-text").value) $("imp-text").value = STARTTABELLE;
+    render();
+  }
+
+  $("btn-admin").addEventListener("click", function(){
+    if (adminToken){ showAdmin(true); return; }
+    $("login-fields").classList.toggle("hidden", !ONLINE);
+    $("login-hint").textContent = ONLINE ? "Nur für das iPad-Team." : "Lokaler Testmodus: Anmeldung ohne Passwort. Nach dem Einrichten von Firebase ist hier ein Login nötig.";
+    $("l-err").textContent = "";
+    $("dlg-login").showModal();
+  });
+  $("l-cancel").addEventListener("click", function(){ $("dlg-login").close(); });
+  $("btn-back").addEventListener("click", function(){ showAdmin(false); });
+  $("btn-logout").addEventListener("click", function(){
+    adminToken = null; try { sessionStorage.removeItem(ADMIN_KEY); } catch(e){}
+    showAdmin(false); toast("Abgemeldet.");
+  });
+
+  $("f-login").addEventListener("submit", function(ev){
+    ev.preventDefault();
+    if (!ONLINE){
+      adminToken = "lokal";
+      $("dlg-login").close();
+      $("admin-who").textContent = "Lokaler Testmodus – Änderungen bleiben auf diesem Gerät.";
+      showAdmin(true); return;
+    }
+    $("l-err").textContent = "Melde an…";
+    fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + encodeURIComponent(FIREBASE_API_KEY), {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email: $("l-mail").value.trim(), password: $("l-pass").value, returnSecureToken: true})
+    }).then(function(r){ return r.json().then(function(j){ if (!r.ok) throw j; return j; }); })
+      .then(function(j){
+        adminToken = j.idToken;
+        try { sessionStorage.setItem(ADMIN_KEY, JSON.stringify({t: j.idToken, m: j.email, until: Date.now() + 55 * 60000})); } catch(e){}
+        $("l-pass").value = "";
+        $("dlg-login").close();
+        $("admin-who").textContent = "Angemeldet als " + j.email + ".";
+        showAdmin(true);
+      })
+      .catch(function(){ $("l-err").textContent = "Anmeldung fehlgeschlagen. E-Mail und Passwort prüfen."; });
+  });
+
+  function adminWrite(upd){
+    return write(upd, true).catch(function(e){
+      if (ONLINE && (e.status === 401 || e.status === 403)){
+        adminToken = null; try { sessionStorage.removeItem(ADMIN_KEY); } catch(x){}
+        toast("Keine Berechtigung oder Anmeldung abgelaufen – bitte neu anmelden.");
+        showAdmin(false);
+      } else toast("Nicht gespeichert – bitte Internetverbindung prüfen.");
+      throw e;
+    });
+  }
+
+  function sameWindow(a, b){ return a.datum === b.datum && a.von === b.von && a.bis === b.bis && a.team === b.team; }
+  function windowExists(f){ return Object.keys(state.fenster).some(function(id){ return sameWindow(state.fenster[id], f); }); }
+
+  /* --- Einzelnes Zeitfenster --- */
+  $("w-datum").max = FRIST;
+  $("f-window").addEventListener("submit", function(ev){
+    ev.preventDefault();
+    var f = {datum: $("w-datum").value, von: $("w-von").value, bis: $("w-bis").value, team: normKuerzel($("w-team").value)};
+    var err = "";
+    if (!f.datum || !f.von || !f.bis || !f.team) err = "Bitte Datum, Beginn, Ende und Betreuung angeben.";
+    else if (f.datum > FRIST) err = "Das Datum liegt nach der Frist (" + dateShort(FRIST) + ").";
+    else if (f.datum < todayIso()) err = "Das Datum liegt in der Vergangenheit.";
+    else if (toMin(f.von) % STEP || toMin(f.bis) % STEP) err = "Bitte Uhrzeiten im 5-Minuten-Raster angeben.";
+    else if (toMin(f.bis) - toMin(f.von) < 20) err = "Das Zeitfenster muss mindestens 20 Minuten lang sein.";
+    else if (windowExists(f)) err = "Dieses Zeitfenster gibt es schon.";
+    $("w-err").textContent = err;
+    if (err) return;
+    var upd = {}; upd["fenster/" + newId()] = f;
+    adminWrite(upd).then(function(){ toast("Zeitfenster angelegt."); $("w-von").value = ""; $("w-bis").value = ""; }).catch(function(){});
+  });
+
+  /* --- Import aus Tabelle --- */
+  var importPlan = [];
+  function parseTable(text, skipStar){
+    var lines = String(text).split(/\r?\n/).filter(function(l){ return l.trim(); });
+    var names = null, res = [], notes = [];
+    lines.forEach(function(line, i){
+      var cols = line.indexOf("\t") >= 0 ? line.split("\t") : line.split(/\s{2,}|\s*\|\s*/);
+      cols = cols.map(function(c){ return c.trim(); });
+      var dm = cols[0].match(/(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+      if (!dm){ if (!names) names = cols.slice(1).map(normKuerzel); return; }
+      if (!names){ notes.push("Kopfzeile mit den Kürzeln fehlt."); return; }
+      var datum = dm[3] + "-" + pad(+dm[2]) + "-" + pad(+dm[1]);
+      if (skipStar && cols[0].indexOf("*") >= 0) return;
+      for (var c = 1; c < cols.length && c - 1 < names.length; c++){
+        var tm = cols[c].match(/(\d{1,2})[:.](\d{2})\s*[–—-]\s*(\d{1,2})[:.](\d{2})/);
+        if (!tm) continue;
+        res.push({datum: datum, von: pad(+tm[1]) + ":" + tm[2], bis: pad(+tm[3]) + ":" + tm[4], team: names[c - 1]});
+      }
+    });
+    return {windows: res, notes: notes};
+  }
+  $("imp-text").addEventListener("input", function(){ $("imp-go").disabled = true; $("imp-result").textContent = ""; });
+  $("imp-skipstar").addEventListener("change", function(){ $("imp-go").disabled = true; $("imp-result").textContent = ""; });
+  $("imp-check").addEventListener("click", function(){
+    var p = parseTable($("imp-text").value, $("imp-skipstar").checked);
+    var today = todayIso(), past = 0, late = 0, dup = 0;
+    importPlan = p.windows.filter(function(f){
+      if (f.datum < today){ past++; return false; }
+      if (f.datum > FRIST){ late++; return false; }
+      if (windowExists(f)){ dup++; return false; }
+      return true;
+    });
+    var msg = importPlan.length + " neue Zeitfenster erkannt";
+    var teams = {};
+    importPlan.forEach(function(f){ teams[f.team] = (teams[f.team] || 0) + 1; });
+    if (importPlan.length) msg += " (" + Object.keys(teams).map(function(t){ return t + ": " + teams[t]; }).join(", ") + ")";
+    msg += ".";
+    if (dup) msg += " " + dup + " gibt es schon.";
+    if (past) msg += " " + past + " liegen in der Vergangenheit.";
+    if (late) msg += " " + late + " liegen nach der Frist.";
+    if (p.notes.length) msg += " " + p.notes[0];
+    $("imp-result").textContent = msg;
+    $("imp-go").disabled = !importPlan.length;
+  });
+  $("imp-go").addEventListener("click", function(){
+    if (!importPlan.length) return;
+    var upd = {};
+    importPlan.forEach(function(f){ upd["fenster/" + newId()] = f; });
+    var n = importPlan.length;
+    adminWrite(upd).then(function(){
+      toast(n + " Zeitfenster übernommen.");
+      importPlan = []; $("imp-go").disabled = true; $("imp-result").textContent = n + " Zeitfenster übernommen.";
+    }).catch(function(){});
+  });
+
+  function renderAdmin(){
+    var teams = {};
+    var ids = sortedWindowIds();
+    $("w-list").innerHTML = ids.length ? ids.map(function(id){
+      var f = state.fenster[id], total = toMin(f.bis) - toMin(f.von), used = total - freeMinutes(id, f);
+      teams[f.team] = true;
+      var n = Object.keys(state.buchungen).filter(function(k){ return state.buchungen[k].fid === id; }).length;
+      return '<tr><td>' + esc(dateLong(f.datum)) + '</td><td>' + esc(f.von) + '–' + esc(f.bis) + '</td>' +
+        '<td><strong>' + esc(f.team) + '</strong></td>' +
+        '<td>' + n + ' Termin' + (n === 1 ? "" : "e") + ' · ' + used + '/' + total + ' Min.</td>' +
+        '<td><button type="button" class="btn small danger" data-del-window="' + esc(id) + '">Löschen</button></td></tr>';
+    }).join("") : '<tr><td colspan="5" class="empty">Noch keine Zeitfenster angelegt.</td></tr>';
+    $("team-list").innerHTML = Object.keys(teams).map(function(t){ return '<option value="' + esc(t) + '">'; }).join("");
+
+    var keys = Object.keys(state.buchungen).sort(function(a, b){ return byTime(state.buchungen[a], state.buchungen[b]); });
+    $("b-list").innerHTML = keys.length ? keys.map(function(k){
+      var b = state.buchungen[k];
+      return '<tr><td>' + esc(dateLong(b.datum)) + '</td><td>' + esc(b.zeit) + '–' + fromMin(toMin(b.zeit) + (+b.dauer)) + '</td>' +
+        '<td><span class="pill' + (+b.dauer === 20 ? ' p20' : '') + '">' + esc(ART[b.dauer] ? ART[b.dauer].kurz : b.dauer) + '</span></td>' +
+        '<td><strong>' + esc(b.kuerzel) + '</strong></td><td>' + esc(b.team || "") + '</td>' +
+        '<td>' + esc(b.gebucht ? new Date(b.gebucht).toLocaleDateString("de-DE") : "") + '</td>' +
+        '<td class="no-print"><button type="button" class="btn small danger" data-del-booking="' + esc(k) + '">Stornieren</button></td></tr>';
+    }).join("") : '<tr><td colspan="7" class="empty">Noch keine Buchungen.</td></tr>';
+
+    var today = todayIso(), free5 = 0, free20 = 0;
+    ids.forEach(function(id){
+      var f = state.fenster[id];
+      if (f.datum < today) return;
+      free5 += startsFor(id, f, 5).length;
+      free20 += startsFor(id, f, 20).filter(function(t){ return (t - toMin(f.von)) % 20 === 0; }).length;
+    });
+    var c5 = keys.filter(function(k){ return +state.buchungen[k].dauer === 5; }).length;
+    $("stats").innerHTML =
+      '<div class="stat"><b>' + keys.length + '</b><span>Buchungen gesamt</span></div>' +
+      '<div class="stat"><b>' + c5 + ' / ' + (keys.length - c5) + '</b><span>davon 5 / 20 Min.</span></div>' +
+      '<div class="stat"><b>' + ids.length + '</b><span>Zeitfenster</span></div>' +
+      '<div class="stat"><b>~' + free20 + '</b><span>freie 20-Min.-Plätze (im Raster)</span></div>';
+  }
+
+  $("admin-area").addEventListener("click", function(ev){
+    var w = ev.target.closest("[data-del-window]"), b = ev.target.closest("[data-del-booking]");
+    if (w){
+      var id = w.dataset.delWindow, f = state.fenster[id];
+      var booked = Object.keys(state.buchungen).filter(function(k){ return state.buchungen[k].fid === id; });
+      var msg = "Zeitfenster " + dateShort(f.datum) + " " + f.von + "–" + f.bis + " (" + f.team + ") löschen?";
+      if (booked.length) msg += "\n\nAchtung: " + booked.length + " Buchung(en) werden mitgelöscht (" +
+        booked.map(function(k){ return state.buchungen[k].kuerzel; }).join(", ") + "). Bitte die Kolleg:innen informieren.";
+      if (!confirm(msg)) return;
+      var upd = {}; upd["fenster/" + id] = null;
+      booked.forEach(function(k){ Object.assign(upd, cancelUpdates(k)); });
+      Object.keys(state.belegt).forEach(function(c){ if (c.indexOf(id + "_") === 0) upd["belegt/" + c] = null; });
+      adminWrite(upd).then(function(){ toast("Zeitfenster gelöscht."); }).catch(function(){});
+    }
+    if (b){
+      var k = b.dataset.delBooking, r = state.buchungen[k];
+      if (!confirm("Buchung von " + r.kuerzel + " am " + dateShort(r.datum) + " um " + r.zeit + " Uhr stornieren?")) return;
+      adminWrite(cancelUpdates(k)).then(function(){ toast("Buchung storniert."); }).catch(function(){});
+    }
+  });
+
+  $("btn-csv").addEventListener("click", function(){
+    var rows = [["Datum", "Beginn", "Ende", "Dauer (Min.)", "Kürzel", "Betreuung", "gebucht am"]];
+    Object.keys(state.buchungen).map(function(k){ return state.buchungen[k]; }).sort(byTime).forEach(function(b){
+      rows.push([dateShort(b.datum) + b.datum.slice(0, 4), b.zeit, fromMin(toMin(b.zeit) + (+b.dauer)), b.dauer, b.kuerzel, b.team || "",
+        b.gebucht ? new Date(b.gebucht).toLocaleString("de-DE") : ""]);
+    });
+    saveFile("ipad-austausch-buchungen.csv", "﻿" + rows.map(function(r){
+      return r.map(function(c){ return '"' + String(c).replace(/"/g, '""') + '"'; }).join(";");
+    }).join("\r\n"), "text/csv");
+  });
+  $("btn-print").addEventListener("click", function(){ window.print(); });
+
+  /* ---------- Öffentliche Übersicht ---------- */
+  $("ov-filter").addEventListener("input", function(){ renderOverview(); });
+  function renderOverview(){
+    var q = normKuerzel($("ov-filter").value), today = todayIso();
+    var list = Object.keys(state.buchungen).map(function(k){ return state.buchungen[k]; })
+      .filter(function(b){ return b && b.datum >= today; }).sort(byTime);
+    var total = list.length;
+    if (q) list = list.filter(function(b){ return b.kuerzel.indexOf(q) === 0; });
+    $("ov-lead").textContent = total ? total + (total === 1 ? " Termin" : " Termine") + " gebucht." : "Noch keine Termine gebucht.";
+    if (!list.length){ $("ov-list").innerHTML = total ? '<p class="empty">Kein Termin für „' + esc(q) + '“ gefunden.</p>' : ""; return; }
+    var html = "", day = null;
+    list.forEach(function(b){
+      if (b.datum !== day){ if (day) html += "</div>"; day = b.datum; html += '<div class="ov-day"><h3>' + esc(dateLong(b.datum)) + '</h3>'; }
+      html += '<div class="ov-row"><span class="t">' + esc(b.zeit) + '–' + fromMin(toMin(b.zeit) + (+b.dauer)) + '</span>' +
+        '<span class="k">' + esc(b.kuerzel) + '</span>' +
+        '<span class="m">' + esc(ART[b.dauer] ? ART[b.dauer].name : "") + ' · bei ' + esc(b.team || "") + '</span></div>';
+    });
+    $("ov-list").innerHTML = html + "</div>";
+  }
+
+  /* ---------- Gesamtdarstellung ---------- */
+  function render(){
+    setStepEnabled("step2", !!sel.kuerzel);
+    setStepEnabled("step3", !!sel.kuerzel && !!sel.dauer);
+    renderMine();
+    renderSlots();
+    renderOverview();
+    if (isAdmin) renderAdmin();
+  }
+
+  /* ---------- Start ---------- */
+  $("frist-text").textContent = dateShort(FRIST) + FRIST.slice(0, 4);
+  $("raum-text").textContent = "Raum " + RAUM;
+  try {
+    var saved = JSON.parse(sessionStorage.getItem(ADMIN_KEY) || "null");
+    if (ONLINE && saved && saved.until > Date.now()){ adminToken = saved.t; $("admin-who").textContent = "Angemeldet als " + saved.m + "."; }
+  } catch(e){}
+  connect();
+  try { lookupMine(localStorage.getItem(MINE_KEY) || ""); } catch(e){}
+  setInterval(render, 60000);   // vergangene Startzeiten ausblenden
+})();
+</script>
+</body>
+</html>

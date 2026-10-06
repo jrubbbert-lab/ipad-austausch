@@ -1,0 +1,27 @@
+{
+  "rules": {
+    "ipad": {
+
+      "fenster": {
+        ".read": true,
+        ".write": "auth != null && auth.uid === 'HIER_DEINE_UID'"
+      },
+
+      "belegt": {
+        ".read": true,
+        "$zelle": {
+          ".write": "(auth != null && auth.uid === 'HIER_DEINE_UID') || (!data.exists() && newData.exists()) || (data.exists() && !newData.exists())",
+          ".validate": "newData.val() === true"
+        }
+      },
+
+      "buchungen": {
+        ".read": true,
+        "$kuerzel": {
+          ".write": "(auth != null && auth.uid === 'HIER_DEINE_UID') || (!data.exists() && newData.exists()) || (data.exists() && !newData.exists())",
+          ".validate": "newData.hasChildren(['kuerzel', 'dauer', 'datum', 'zeit', 'fid']) && newData.child('kuerzel').val() === $kuerzel && $kuerzel.length >= 2 && $kuerzel.length <= 5 && (newData.child('dauer').val() === 5 || newData.child('dauer').val() === 20) && root.child('ipad/fenster/' + newData.child('fid').val()).exists()"
+        }
+      }
+    }
+  }
+}
