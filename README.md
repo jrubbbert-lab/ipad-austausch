@@ -1,6 +1,6 @@
 # iPad-Austausch – Terminbuchung (PEBK)
 
-Eine einzige Datei (`index.html`): Lehrkräfte geben ihr Kürzel ein, wählen 5 Min. (Übergabe) oder 20 Min. (Übergabe + Datensicherung) und buchen einen freien Termin in Raum A113. Das iPad-Team verwaltet die Zeitfenster über „Verwaltung (iPad-Team)“ unten auf der Seite.
+Eine einzige Datei (`index.html`): Lehrkräfte geben ihr Kürzel ein, wählen 5 Min. (Übergabe) oder 20 Min. (Übergabe + Datensicherung) und buchen einen freien Termin in Raum B113. Das iPad-Team verwaltet die Zeitfenster über „Verwaltung (iPad-Team)“ unten auf der Seite.
 
 Ohne Firebase-Eintrag läuft das Tool im **lokalen Testmodus**. Die Daten bleiben dann nur in diesem Browser.
 
